@@ -1,0 +1,90 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <div class="register-page">
+    <div class="register-box">
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="/" class="h1"><b>WMS</b></a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Register a new user</p>
+
+          <form action="{% url 'register' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              {{ form.name }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger">{{ form.errors.name }}</div>
+
+            <div class="input-group mb-3">
+              {{ form.username }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-pen"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger">{{ form.errors.username }}</div>
+
+            <div class="input-group mb-3">
+              {{ form.email }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-envelope"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger">{{ form.errors.email }}</div>
+
+            <div class="input-group mb-3">
+              {{ form.phone_number }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-phone"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger">{{ form.errors.phone_number }}</div>
+
+            <div class="input-group mb-3">
+              {{ form.password1 }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger">{{ form.errors.password1 }}</div>
+
+            <div class="input-group mb-3">
+              {{ form.password2 }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="text-danger">{{ form.errors.password2 }}</div>
+
+            <div class="row">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+
+          <a href="{% url 'login' %}" class="text-center">I already have a membership</a>
+        </div>
+        <!-- /.form-box -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+{% endblock %}
