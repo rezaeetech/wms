@@ -1,0 +1,69 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+  <div class="login-page">
+    <div class="login-box">
+      <!-- /.login-logo -->
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="/" class="h1"><b>WMS</b></a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Login to start your session</p>
+
+          <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+              {{ form.username }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              {{ form.password }}
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+
+            {% if form.non_field_errors %}
+              <div class="non-field-errors">
+                <ul class="text-danger">
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            {% endif %}
+
+            <div class="row">
+              <div class="col-8">
+                <div class="icheck-primary">
+                  {{ form.remember }}
+                  <label for="remember">Remember Me</label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" class="btn btn-primary btn-block">Login</button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+          <p class="mb-1">
+            <a href="{% url 'forget-password' %}">I forgot my password</a>
+          </p>
+          <p class="mb-0">
+            <a href="{% url 'register' %}" class="text-center">Register a new membership</a>
+          </p>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+{% endblock %}
