@@ -3,7 +3,7 @@ from uuid import uuid4
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
-    PermissionsMixin
+    PermissionsMixin,
 )
 from django.db import models
 
@@ -20,7 +20,7 @@ class UserManager(BaseUserManager):
         """
 
         if not email:
-            raise ValueError('The Email field must be set')
+            raise ValueError("The Email field must be set")
         email = self.normalize_email(email)
         user = self.model(email=email, username=username, **extra_fields)
         user.set_password(password)
@@ -32,15 +32,15 @@ class UserManager(BaseUserManager):
         Create and return a superuser with a username, email, and password.
         """
 
-        extra_fields.setdefault('role', 'admin')
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault("role", "admin")
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_active", True)
 
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Superuser must have is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self.create_user(email, username, password, **extra_fields)
 
@@ -52,9 +52,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     """
 
     ROLE_CHOICES = [
-        ('admin', 'Admin'),
-        ('manager', 'Manager'),
-        ('staff', 'Staff'),
+        ("admin", "Admin"),
+        ("manager", "Manager"),
+        ("staff", "Staff"),
     ]
 
     id = models.UUIDField(
@@ -89,11 +89,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name="Role",
         choices=ROLE_CHOICES,
         max_length=20,
-        default='staff',
+        default="staff",
     )
     is_active = models.BooleanField(
         verbose_name="Active Status",
-        default=True,
+        default=False,
     )
     created_at = models.DateTimeField(
         verbose_name="Created at",
@@ -111,8 +111,8 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'name']
+    USERNAME_FIELD = "username"
+    REQUIRED_FIELDS = ["email", "name"]
 
     def __str__(self):
         """
