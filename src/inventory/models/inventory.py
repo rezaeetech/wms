@@ -1,27 +1,30 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class Inventory(models.Model):
     product = models.ForeignKey(
-        "inventory.product",
-        verbose_name="Product",
+        to="inventory.product",
+        verbose_name=_("Product"),
         on_delete=models.CASCADE,
     )
     warehouse = models.ForeignKey(
-        "inventory.warehouse",
-        verbose_name="Warehouse",
+        to="inventory.warehouse",
+        verbose_name=_("Warehouse"),
         on_delete=models.SET_NULL,
         null=True,
     )
 
     quantity = models.IntegerField(
-        verbose_name="Quantity",
+        verbose_name=_("Quantity"),
         default=0,
     )
 
-    updated_at = models.DateTimeField(
-        verbose_name="Updated at",
+    created_at = models.DateTimeField(
         auto_now_add=True,
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
     )
 
     def __str__(self):

@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 
 class UserManager(BaseUserManager):
@@ -51,10 +52,14 @@ class User(AbstractBaseUser, PermissionsMixin):
         using email and username as unique identifiers.
     """
 
+    ADMIN = "admin"
+    MANAGER = "manager"
+    STAFF = "staff"
+
     ROLE_CHOICES = [
-        ("admin", "Admin"),
-        ("manager", "Manager"),
-        ("staff", "Staff"),
+        (ADMIN, _("Admin")),
+        (MANAGER, _("Manager")),
+        (STAFF, _("Staff")),
     ]
 
     id = models.UUIDField(
@@ -63,56 +68,53 @@ class User(AbstractBaseUser, PermissionsMixin):
         editable=False,
     )
     name = models.CharField(
-        verbose_name="Full Name",
+        verbose_name=_("Full Name"),
         max_length=100,
     )
     username = models.CharField(
-        verbose_name="Username",
+        verbose_name=_("Username"),
         max_length=50,
         unique=True,
     )
     password = models.CharField(
-        verbose_name="Password",
+        verbose_name=_("Password"),
         max_length=128,
     )
     phone_number = models.CharField(
-        verbose_name="Phone Number",
+        verbose_name=_("Phone Number"),
         max_length=15,
         blank=True,
         null=True,
     )
     email = models.EmailField(
-        verbose_name="Email",
+        verbose_name=_("Email"),
         unique=True,
     )
     role = models.CharField(
-        verbose_name="Role",
+        verbose_name=_("Role"),
         choices=ROLE_CHOICES,
-        max_length=20,
-        default="staff",
+        max_length=10,
+        default=STAFF,
     )
     is_active = models.BooleanField(
-        verbose_name="Active Status",
+        verbose_name=_("Active Status"),
         default=False,
     )
     created_at = models.DateTimeField(
-        verbose_name="Created at",
         auto_now_add=True,
     )
 
     is_staff = models.BooleanField(
-        verbose_name="Staff Status",
         default=False,
     )
     is_superuser = models.BooleanField(
-        verbose_name="Superuser Status",
         default=False,
     )
 
     objects = UserManager()
 
     USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email", "name"]
+    REQUIRED_FIELDS = ["email"]
 
     def __str__(self):
         """

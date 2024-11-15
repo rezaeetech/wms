@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
 
@@ -10,9 +11,9 @@ class UserRegistrationForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Full Name"
+                "placeholder": _("Full Name"),
             }
-        )
+        ),
     )
     username = forms.CharField(
         max_length=50,
@@ -20,18 +21,18 @@ class UserRegistrationForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Username"
+                "placeholder": _("Username"),
             }
-        )
+        ),
     )
     email = forms.EmailField(
         required=True,
         widget=forms.EmailInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Email"
+                "placeholder": _("Email"),
             }
-        )
+        ),
     )
     phone_number = forms.CharField(
         max_length=15,
@@ -39,26 +40,26 @@ class UserRegistrationForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Phone Number"
+                "placeholder": _("Phone Number"),
             }
-        )
+        ),
     )
 
     password1 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Password"
+                "placeholder": _("Password"),
             }
-        )
+        ),
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
-                    "class": "form-control",
-                    "placeholder": "Confirm Password"
+                "class": "form-control",
+                "placeholder": _("Confirm Password"),
             }
-        )
+        ),
     )
 
     class Meta:
@@ -90,23 +91,23 @@ class LoginForm(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Username"
+                "placeholder": _("Username"),
             }
-        )
+        ),
     )
     password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Password"
+                "placeholder": _("Password"),
             }
-        )
+        ),
     )
     remember = forms.BooleanField(
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                "id": "remember"
+                "id": "remember",
             }
-        )
+        ),
     )
