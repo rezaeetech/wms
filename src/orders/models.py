@@ -1,5 +1,3 @@
-from uuid import uuid4
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -13,12 +11,6 @@ class Order(models.Model):
         PENDING = "Pending", _("Pending")
         COMPLETED = "Completed", _("Completed")
         CANCELLED = "Cancelled", _("Cancelled")
-
-    id = models.UUIDField(
-        primary_key=True,
-        editable=False,
-        default=uuid4,
-    )
 
     customer = models.ForeignKey(
         to="orders.customer",
@@ -53,16 +45,10 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return f"Order #{self.id.split('-')[0]} - {self.customer.name}"
+        return f"Order #{self.id} - {self.customer.name}"
 
 
 class OrderItems(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        editable=False,
-        default=uuid4,
-    )
-
     order = models.ForeignKey(
         to="orders.order",
         verbose_name=_("Order"),
@@ -84,7 +70,7 @@ class OrderItems(models.Model):
     )
 
     def __str__(self):
-        return f"""OrderItem for Order #{self.order.id.split('-')[0]} -
+        return f"""OrderItem for Order #{self.order.id} -
                     {self.product.name}"""
 
     def get_total_price(self):
@@ -92,12 +78,6 @@ class OrderItems(models.Model):
 
 
 class Customer(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        editable=False,
-        default=uuid4,
-    )
-
     name = models.CharField(
         verbose_name=_("Full Name"),
         max_length=255,

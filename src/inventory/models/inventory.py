@@ -1,15 +1,7 @@
-from uuid import uuid4
-
 from django.db import models
 
 
 class Inventory(models.Model):
-    id = models.UUIDField(
-        primary_key=True,
-        editable=False,
-        default=uuid4,
-    )
-
     product = models.ForeignKey(
         "inventory.product",
         verbose_name="Product",
