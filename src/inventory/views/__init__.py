@@ -1,3 +1,10 @@
+from inventory.views.inventory import (  # noqa
+    InventoryListView,
+    InventoryDetailView,
+    InventoryCreateView,
+    InventoryUpdateView,
+    InventoryDeleteView,
+)
 from inventory.views.product import (  # noqa
     ProductListView,
     ProductDetailView,

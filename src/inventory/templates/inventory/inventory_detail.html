@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="col-md-6">
+    <!-- general form elements -->
+    <div class="card card-app">
+      <div class="card-header">
+        <h3 class="card-title">
+          <a class="btn btn-info btn-sm" href="{% url 'inventory_update' pk=inventory_item.id %}">
+            <i class="fas fa-pencil-alt"></i>
+            Edit
+          </a>
+          <a class="btn btn-danger btn-sm" href="{% url 'inventory_delete' pk=inventory_item.id %}">
+            <i class="fas fa-trash"></i>
+            Delete
+          </a>
+        </h3>
+      </div>
+      <!-- form start -->
+      <div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Warehouse Name:</label>
+            {{ inventory_item.warehouse }}
+          </div>
+          <div class="form-group">
+            <label>Product Name:</label>
+            {{ inventory_item.product }}
+          </div>
+          <div class="form-group">
+            <label>Price:</label>
+            {{ inventory_item.quantity }}
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+{% endblock %}
