@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><a href="{% url 'product_create' %}" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Create a new product</a></h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0" style="height: 300px;">
+          <table class="table table-head-fixed text-nowrap">
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Category</th>
+                <th>Supplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in products %}
+                <tr>
+                  <td>{{ product.sku }}</td>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.price }}</td>
+                  <td>{{ product.category }}</td>
+                  <td>{{ product.supplier }}</td>
+                  <td class="project-actions text-right">
+                    <a class="btn btn-primary btn-sm" href="{% url 'product_detail' pk=product.id %}">
+                      <i class="fas fa-folder"></i>
+                      View
+                    </a>
+                    <a class="btn btn-info btn-sm" href="{% url 'product_update' pk=product.id %}">
+                      <i class="fas fa-pencil-alt"></i>
+                      Edit
+                    </a>
+                    <a class="btn btn-danger btn-sm" href="{% url 'product_delete' pk=product.id %}">
+                      <i class="fas fa-trash"></i>
+                      Delete
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+  <!-- /.row -->
+{% endblock %}

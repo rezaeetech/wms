@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form method="POST" action="{% url 'product_delete' pk=product.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger btn-lg" value="DELETE">Confirm Delete {{ product.name }}</button>
+  </form>
+{% endblock %}
