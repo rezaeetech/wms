@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="col-md-6">
+    <!-- general form elements -->
+    <div class="card card-app">
+      <div class="card-header">
+        <h3 class="card-title">
+          <a class="btn btn-info btn-sm" href="{% url 'supplier_update' pk=supplier.id %}">
+            <i class="fas fa-pencil-alt"></i>
+            Edit
+          </a>
+          <a class="btn btn-danger btn-sm" href="{% url 'supplier_delete' pk=supplier.id %}">
+            <i class="fas fa-trash"></i>
+            Delete
+          </a>
+        </h3>
+      </div>
+      <!-- form start -->
+      <div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Supplier Name:</label>
+            {{ supplier.name }}
+          </div>
+          <div class="form-group">
+            <label>Contact number:</label>
+            {{ supplier.contact_number }}
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            {{ supplier.email }}
+          </div>
+          <div class="form-group">
+            <label>Address:</label>
+            {{ supplier.address }}
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+{% endblock %}

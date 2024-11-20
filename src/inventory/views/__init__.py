@@ -12,3 +12,10 @@ from inventory.views.category import (  # noqa
     CategoryUpdateView,
     CategoryDeleteView,
 )
+from inventory.views.supplier import (  # noqa
+    SupplierListView,
+    SupplierDetailView,
+    SupplierCreateView,
+    SupplierUpdateView,
+    SupplierDeleteView,
+)
