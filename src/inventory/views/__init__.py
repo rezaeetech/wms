@@ -5,6 +5,13 @@ from inventory.views.product import (  # noqa
     ProductUpdateView,
     ProductDeleteView,
 )
+from inventory.views.warehouse import (  # noqa
+    WarehouseListView,
+    WarehouseDetailView,
+    WarehouseCreateView,
+    WarehouseUpdateView,
+    WarehouseDeleteView,
+)
 from inventory.views.category import (  # noqa
     CategoryListView,
     CategoryDetailView,
