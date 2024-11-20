@@ -22,15 +22,15 @@
           <div class="container-fluid">
             <div class="row mb-2">
               <div class="col-sm-6">
-                <h1 class="m-0">Dashboard</h1>
+                <h1 class="m-0">{{ title|default:"Dashboard" }}</h1>
               </div>
               <!-- /.col -->
               <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                   <li class="breadcrumb-item">
-                    <a href="/">Home</a>
+                    <a href="{% url current_section_url %}">{{ current_section|default:"Home" }}</a>
                   </li>
-                  <li class="breadcrumb-item active">{{ current_section|default:"Dashboard" }}</li>
+                  <li class="breadcrumb-item active">{{ current_action|default:"Dashboard" }}</li>
                 </ol>
               </div>
               <!-- /.col -->
