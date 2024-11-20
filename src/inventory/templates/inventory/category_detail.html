@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="col-md-6">
+    <!-- general form elements -->
+    <div class="card card-app">
+      <div class="card-header">
+        <h3 class="card-title">
+          <a class="btn btn-info btn-sm" href="{% url 'category_update' pk=category.id %}">
+            <i class="fas fa-pencil-alt"></i>
+            Edit
+          </a>
+          <a class="btn btn-danger btn-sm" href="{% url 'category_delete' pk=category.id %}">
+            <i class="fas fa-trash"></i>
+            Delete
+          </a>
+        </h3>
+      </div>
+      <div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Category Name:</label>
+            {{ category.name }}
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+{% endblock %}
