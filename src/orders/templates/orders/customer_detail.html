@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="col-md-6">
+    <!-- general form elements -->
+    <div class="card card-app">
+      <div class="card-header">
+        <h3 class="card-title">
+          <a class="btn btn-info btn-sm" href="{% url 'customer_update' pk=customer.id %}">
+            <i class="fas fa-pencil-alt"></i>
+            Edit
+          </a>
+          <a class="btn btn-danger btn-sm" href="{% url 'customer_delete' pk=customer.id %}">
+            <i class="fas fa-trash"></i>
+            Delete
+          </a>
+        </h3>
+      </div>
+      <div>
+        <div class="card-body">
+          <div class="form-group">
+            <label>Customer Name:</label>
+            {{ customer.name }}
+          </div>
+          <div class="form-group">
+            <label>Contact Number:</label>
+            {{ customer.contact_number }}
+          </div>
+          <div class="form-group">
+            <label>Email:</label>
+            {{ customer.email }}
+          </div>
+          <div class="form-group">
+            <label>Address:</label>
+            {{ customer.address }}
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+    </div>
+    <!-- /.card -->
+  </div>
+{% endblock %}
