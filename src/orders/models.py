@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from inventory.models import inventory
+
 
 class Order(models.Model):
     class OrderType(models.TextChoices):
@@ -96,3 +98,69 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class InventoryTransaction(models.Model):
+    class TransactionType(models.TextChoices):
+        INBOUND = "inbound", _("Inbound")
+        OUTBOUND = "outbound", _("Outbound")
+
+    transaction_type = models.CharField(
+        max_length=10,
+        choices=TransactionType.choices,
+        verbose_name=_("Transaction Type"),
+    )
+    order = models.ForeignKey(
+        "orders.Order",
+        on_delete=models.CASCADE,
+        related_name="inventory_transactions",
+        verbose_name=_("Order"),
+    )
+    warehouse = models.ForeignKey(
+        "inventory.Warehouse",
+        on_delete=models.CASCADE,
+        verbose_name=_("Warehouse"),
+    )
+    recorded_by = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name=_("Recorded By"),
+    )
+    transaction_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Transaction Date"),
+    )
+
+    class Meta:
+        verbose_name = _("Inventory Transaction")
+        verbose_name_plural = _("Inventory Transactions")
+        ordering = ["-transaction_date"]
+
+    def __str__(self):
+        return (
+            f"{self.get_transaction_type_display()} - "
+            "Order: {self.order.id} - {self.warehouse.name}"
+        )
+
+    def save(self, *args, **kwargs):
+        """
+        Automatically update stock in the associated warehouse
+        when the transaction is saved.
+        """
+        order_items = self.order.order_items.all()
+        for item in order_items:
+            product_inventory, created = inventory.objects.get_or_create(
+                product=item.product, warehouse=self.warehouse
+            )
+            if self.transaction_type == self.TransactionType.INBOUND:
+                product_inventory.quantity += item.quantity
+            elif self.transaction_type == self.TransactionType.OUTBOUND:
+                if product_inventory.quantity < item.quantity:
+                    raise ValueError(
+                        f"Insufficient stock in {self.warehouse.name} "
+                        "for {item.product.name}"
+                    )
+                product_inventory.quantity -= item.quantity
+            product_inventory.save()
+        super().save(*args, **kwargs)
