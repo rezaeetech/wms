@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block links %}
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}" />
+
+  <style>
+    .select2-container .select2-selection--single {
+      height: 38px; /* Matches Bootstrap input height */
+    }
+    .select2-selection__rendered {
+      line-height: 38px; /* Vertically center the text */
+    }
+    .select2-selection__arrow {
+      height: 38px; /* Match height for proper alignment */
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <form id="order-form" method="POST" action="{% url 'order_create' %}">
+    {% csrf_token %}
+    <div class="card card-default">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Customer</label>
+              {{ order_form.customer }}
+            </div>
+            <!-- /.form-group -->
+          </div>
+          <!-- /.col -->
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Order Type</label>
+              {{ order_form.order_type }}
+            </div>
+            <!-- /.form-group -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+          <div class="col-md-6">
+            <label for="product">Product</label>
+            {{ order_item_formset.0.product }}
+          </div>
+          <div class="col-md-2">
+            <label for="quantity">Quantity</label>
+            {{ order_item_formset.0.quantity }}
+          </div>
+          <div class="col-md-2">
+            <label for="price">Price</label>
+            {{ order_item_formset.0.price }}
+          </div>
+          <div class="col-md-2">
+            <label></label>
+            <button type="button" id="add-to-table" class="btn btn-block btn-primary"><i class="fa fa-plus"></i> Add to Table</button>
+          </div>
+        </div>
+        <br />
+        <!-- /.row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body p-0">
+                <table id="order-table" class="table">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Product</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Total</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+        <input type="hidden" name="product_list" id="productList" />
+        <button type="submit" class="btn btn-block bg-gradient-success" style="width: 220px;">Create Order</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    $(document).ready(function () {
+        // Initialize Select2
+        $('#id_customer').select2({
+            placeholder: 'Select a customer', // Placeholder text
+            allowClear: true // Adds a clear button
+        })
+    })
+    $(document).ready(function () {
+        // Initialize Select2
+        $('#id_form-0-product').select2({
+            placeholder: 'Select a product', // Placeholder text
+            allowClear: true // Adds a clear button
+        })
+    })
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const productSelect = document.getElementById('product');
+        const priceField = document.getElementById('price');
+        const quantityField = document.getElementById('quantity');
+        const addToTableButton = document.getElementById('add-to-table');
+        const orderTableBody = document.querySelector('#order-table tbody');
+        const orderProductList = document.getElementById("productList");
+
+
+        productSelect.addEventListener("change", () => {
+            const productId = productSelect.options[productSelect.selectedIndex].value; // Get the selected product ID
+            // Fetch the product price
+            fetch(`/orders/product-price/${productId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Set the price in the input field
+                        const selectedOption = productSelect.options[productSelect.selectedIndex];
+                        const price = data.price;
+                        priceField.value = price ? price : '';
+                    } else {
+                        alert(data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching product price:", error);
+                });
+        });
+
+        // Add product details to the table
+        addToTableButton.addEventListener('click', () => {
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            const productName = selectedOption.text;
+            const productId = productSelect.value;
+            const price = parseFloat(priceField.value);
+            const quantity = parseInt(quantityField.value);
+
+            // Validation: Ensure product is selected and quantity is valid
+            if (!productId || isNaN(price) || quantity <= 0) {
+                alert('Please select a product and enter a valid quantity.');
+                return;
+            }
+
+            // Calculate total price
+            const total = price * quantity;
+
+            // Add a new row to the table
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td data-product-id="${productId}">${productId}</td>
+              <td>${productName}</td>
+              <td>${price.toFixed(2)}</td>
+              <td>${quantity}</td>
+              <td>${total.toFixed(2)}</td>
+              <td><button type="button" class="btn btn-danger btn-sm remove-row">Remove</button></td>
+          `;
+            orderTableBody.appendChild(row);
+
+            // Clear the form fields
+            productSelect.value = '';
+            priceField.value = '';
+            quantityField.value = 1;
+        });
+
+        // Remove a row from the table
+        orderTableBody.addEventListener('click', (event) => {
+            if (event.target.classList.contains('remove-row')) {
+                event.target.closest('tr').remove();
+            }
+        });
+
+        // Collect table data on form submission
+        document.getElementById("order-form").addEventListener("submit", function (e) {
+            const rows = orderTableBody.querySelectorAll("tr");
+            const productList = [];
+
+            rows.forEach(row => {
+                const product = row.querySelectorAll('td')[0].textContent
+                const price = row.querySelectorAll('td')[2].textContent
+                const quantity = row.querySelectorAll('td')[3].textContent
+
+                if (product && quantity > 0) {
+                    productList.push({ product, quantity });
+                }
+            });
+
+            // Add JSON data to hidden input
+            orderProductList.value = JSON.stringify(productList);
+        });
+
+    });
+  </script>
+
+  <!-- Select2 -->
+  <script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+{% endblock %}

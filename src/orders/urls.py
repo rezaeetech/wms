@@ -4,6 +4,18 @@ from orders import views
 
 
 urlpatterns = [
+    # Orders
+    path(
+        "create/",
+        views.OrderCreateView.as_view(),
+        name="order_create",
+    ),
+    path(
+        "product-price/<int:product_id>/",
+        views.get_product_price,
+        name="get_product_price",
+    ),
+
     # Customer
     path(
         "customers/",
