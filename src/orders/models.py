@@ -27,7 +27,7 @@ class Order(models.Model):
         choices=OrderType.choices,
         max_length=20,
     )
-    order_status = models.BooleanField(
+    order_status = models.CharField(
         verbose_name=_("Order Status"),
         max_length=20,
         choices=OrderStatus.choices,
