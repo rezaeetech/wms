@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title"><a href="{% url 'order_create' %}" class="btn btn-outline-primary"><i class="fa fa-plus"></i> Create a new Order</a></h3>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0" style="height: 300px;">
+          <table class="table table-head-fixed text-nowrap">
+            <thead>
+              <tr>
+                <th style="width: 20px;">#</th>
+                <th>Customer/Supplier</th>
+                <th>Order Type</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders %}
+                <tr>
+                  <td>{{ order.id }}</td>
+                  <td>{{ order.customer.name }}</td>
+                  <td>{{ order.order_type }}</td>
+                  <td>{{ order.order_status }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+  <!-- /.row -->
+{% endblock %}

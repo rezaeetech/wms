@@ -6,6 +6,11 @@ from orders import views
 urlpatterns = [
     # Orders
     path(
+        "",
+        views.OrderListView.as_view(),
+        name="order_list",
+    ),
+    path(
         "create/",
         views.OrderCreateView.as_view(),
         name="order_create",
@@ -41,5 +46,12 @@ urlpatterns = [
         "customers/<int:pk>/delete/",
         views.CustomerDeleteView.as_view(),
         name="customer_delete",
+    ),
+
+    # Other URLs for inventory
+    path(
+        "transactions/<int:order_id>/",
+        views.InventoryTransactionCreateView.as_view(),
+        name="transaction_create",
     ),
 ]

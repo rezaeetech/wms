@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from inventory.models import inventory
+from inventory.models import Inventory
 
 
 class Order(models.Model):
@@ -148,9 +148,9 @@ class InventoryTransaction(models.Model):
         Automatically update stock in the associated warehouse
         when the transaction is saved.
         """
-        order_items = self.order.order_items.all()
+        order_items = self.order.items.all()
         for item in order_items:
-            product_inventory, created = inventory.objects.get_or_create(
+            product_inventory, created = Inventory.objects.get_or_create(
                 product=item.product, warehouse=self.warehouse
             )
             if self.transaction_type == self.TransactionType.INBOUND:

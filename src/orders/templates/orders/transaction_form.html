@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card card-primary">
+    <!-- form start -->
+    <form method="POST" action="{% url 'transaction_create' order_id %}">
+      {% csrf_token %}
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Warehouse</label>
+              <select name="warehouse" id="warehouse" class="form-control" required="True">
+                <option value="" selected="">---------</option>
+                {% for warehouse in warehouses %}
+                  <option value="{{ warehouse.id }}">{{ warehouse.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>Order Status</label>
+              <select name="order_status" id="order_status" class="form-control" required="True">
+                <option value="" selected="">---------</option>
+                <option value="Pending">Pending</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body p-0">
+                <table id="order-items" class="table">
+                  <thead>
+                    <tr>
+                      <th style="width: 10px">#</th>
+                      <th>Product</th>
+                      <th>Quantity</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in order_items %}
+                      <tr>
+                        <td>{{ item.id }}</td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+          </div>
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.card-body -->
+
+      <div class="card-footer">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

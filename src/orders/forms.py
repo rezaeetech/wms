@@ -6,11 +6,6 @@ from orders.models import (
     Order,
     OrderItems,
     Customer,
-    InventoryTransaction,
-)
-
-from inventory.models import (
-    Warehouse,
 )
 
 
@@ -94,42 +89,3 @@ class CustomerForm(forms.ModelForm):
                 }
             ),
         }
-
-
-class InventoryTransactionForm(forms.ModelForm):
-    class Meta:
-        model = InventoryTransaction
-        fields = ["transaction_type", "order", "warehouse"]
-        widgets = {
-            "transaction_type": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "order": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-            "warehouse": forms.Select(
-                attrs={
-                    "class": "form-control",
-                }
-            ),
-        }
-        labels = {
-            "transaction_type": _("Transaction Type"),
-            "order": _("Order"),
-            "warehouse": _("Warehouse"),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Optional customization:
-        #   Limit available orders to those that are active or relevant
-        self.fields["order"].queryset = Order.objects.filter(
-            status="approved"
-        )  # Example filter
-        self.fields["warehouse"].queryset = (
-            Warehouse.objects.all()
-        )  # Include all warehouses
