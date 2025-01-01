@@ -10,11 +10,19 @@ from django.views.generic import (
 from inventory.models import Product
 from inventory.forms import ProductForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
 current_section = "Product"
 current_section_url = "product_list"
 
+allowed_roles = [
+    "admin",
+    "manager",
+]  # Create, Update, Delete views only access to admin and manager roles.
 
-class ProductListView(ListView):
+
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
     template_name = "inventory/product_list.html"
     context_object_name = "products"
@@ -28,7 +36,7 @@ class ProductListView(ListView):
         return context
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "inventory/product_detail.html"
     context_object_name = "product"
@@ -42,7 +50,7 @@ class ProductDetailView(DetailView):
         return context
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Product
     template_name = "inventory/product_form.html"
     form_class = ProductForm
@@ -58,7 +66,7 @@ class ProductCreateView(CreateView):
         return context
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Product
     template_name = "inventory/product_form.html"
     form_class = ProductForm
@@ -74,7 +82,7 @@ class ProductUpdateView(UpdateView):
         return context
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Product
     template_name = "inventory/product_delete.html"
     success_url = reverse_lazy("product_list")

@@ -10,11 +10,19 @@ from django.views.generic import (
 from inventory.models import Inventory
 from inventory.forms import InventoryForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
 current_section = "Inventory"
 current_section_url = "inventory_list"
 
+allowed_roles = [
+    "admin",
+    "manager",
+]  # Create, Update, Delete views only access to admin and manager roles.
 
-class InventoryListView(ListView):
+
+class InventoryListView(LoginRequiredMixin, ListView):
     model = Inventory
     template_name = "inventory/inventory_list.html"
     context_object_name = "inventory_items"
@@ -28,7 +36,7 @@ class InventoryListView(ListView):
         return context
 
 
-class InventoryDetailView(DetailView):
+class InventoryDetailView(LoginRequiredMixin, DetailView):
     model = Inventory
     template_name = "inventory/inventory_detail.html"
     context_object_name = "inventory_item"
@@ -42,7 +50,7 @@ class InventoryDetailView(DetailView):
         return context
 
 
-class InventoryCreateView(CreateView):
+class InventoryCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Inventory
     template_name = "inventory/inventory_form.html"
     form_class = InventoryForm
@@ -57,7 +65,7 @@ class InventoryCreateView(CreateView):
         return context
 
 
-class InventoryUpdateView(UpdateView):
+class InventoryUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Inventory
     template_name = "inventory/inventory_form.html"
     form_class = InventoryForm
@@ -72,7 +80,7 @@ class InventoryUpdateView(UpdateView):
         return context
 
 
-class InventoryDeleteView(DeleteView):
+class InventoryDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Inventory
     template_name = "inventory/inventory_delete.html"
     success_url = reverse_lazy("inventory_list")

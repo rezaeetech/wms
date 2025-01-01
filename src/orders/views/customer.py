@@ -10,11 +10,19 @@ from django.views.generic import (
 from orders.models import Customer
 from orders.forms import CustomerForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
 current_section = "customer"
 current_section_url = "customer_list"
 
+allowed_roles = [
+    "admin",
+    "manager",
+]  # Create, Update, Delete views only access to admin and manager roles.
 
-class CustomerListView(ListView):
+
+class CustomerListView(LoginRequiredMixin, ListView):
     model = Customer
     template_name = "orders/customer_list.html"
     context_object_name = "customers"
@@ -28,7 +36,7 @@ class CustomerListView(ListView):
         return context
 
 
-class CustomerDetailView(DetailView):
+class CustomerDetailView(LoginRequiredMixin, DetailView):
     model = Customer
     template_name = "orders/customer_detail.html"
     context_object_name = "customer"
@@ -42,7 +50,7 @@ class CustomerDetailView(DetailView):
         return context
 
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Customer
     template_name = "orders/customer_form.html"
     form_class = CustomerForm
@@ -57,7 +65,7 @@ class CustomerCreateView(CreateView):
         return context
 
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Customer
     template_name = "orders/customer_form.html"
     form_class = CustomerForm
@@ -72,7 +80,7 @@ class CustomerUpdateView(UpdateView):
         return context
 
 
-class CustomerDeleteView(DeleteView):
+class CustomerDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Customer
     template_name = "orders/customer_delete.html"
     success_url = reverse_lazy("customer_list")

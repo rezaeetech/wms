@@ -10,11 +10,19 @@ from django.views.generic import (
 from inventory.models import Supplier
 from inventory.forms import SupplierForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
 current_section = "Supplier"
 current_section_url = "supplier_list"
 
+allowed_roles = [
+    "admin",
+    "manager",
+]  # Create, Update, Delete views only access to admin and manager roles.
 
-class SupplierListView(ListView):
+
+class SupplierListView(LoginRequiredMixin, ListView):
     model = Supplier
     template_name = "inventory/supplier_list.html"
     context_object_name = "suppliers"
@@ -28,7 +36,7 @@ class SupplierListView(ListView):
         return context
 
 
-class SupplierDetailView(DetailView):
+class SupplierDetailView(LoginRequiredMixin, DetailView):
     model = Supplier
     template_name = "inventory/supplier_detail.html"
     context_object_name = "supplier"
@@ -42,7 +50,7 @@ class SupplierDetailView(DetailView):
         return context
 
 
-class SupplierCreateView(CreateView):
+class SupplierCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Supplier
     template_name = "inventory/supplier_form.html"
     form_class = SupplierForm
@@ -57,7 +65,7 @@ class SupplierCreateView(CreateView):
         return context
 
 
-class SupplierUpdateView(UpdateView):
+class SupplierUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Supplier
     template_name = "inventory/supplier_form.html"
     form_class = SupplierForm
@@ -72,7 +80,7 @@ class SupplierUpdateView(UpdateView):
         return context
 
 
-class SupplierDeleteView(DeleteView):
+class SupplierDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Supplier
     template_name = "inventory/supplier_delete.html"
     success_url = reverse_lazy("supplier_list")

@@ -10,11 +10,20 @@ from django.views.generic import (
 from inventory.models import Category
 from inventory.forms import CategoryForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
+
 current_section = "Category"
 current_section_url = "category_list"
 
+allowed_roles = [
+    "admin",
+    "manager",
+]  # Create, Update, Delete views only access to admin and manager roles.
 
-class CategoryListView(ListView):
+
+class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     template_name = "inventory/category_list.html"
     context_object_name = "categories"
@@ -28,7 +37,7 @@ class CategoryListView(ListView):
         return context
 
 
-class CategoryDetailView(DetailView):
+class CategoryDetailView(LoginRequiredMixin, DetailView):
     model = Category
     template_name = "inventory/category_detail.html"
     context_object_name = "category"
@@ -42,7 +51,7 @@ class CategoryDetailView(DetailView):
         return context
 
 
-class CategoryCreateView(CreateView):
+class CategoryCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Category
     template_name = "inventory/category_form.html"
     form_class = CategoryForm
@@ -57,7 +66,7 @@ class CategoryCreateView(CreateView):
         return context
 
 
-class CategoryUpdateView(UpdateView):
+class CategoryUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Category
     template_name = "inventory/category_form.html"
     form_class = CategoryForm
@@ -72,7 +81,7 @@ class CategoryUpdateView(UpdateView):
         return context
 
 
-class CategoryDeleteView(DeleteView):
+class CategoryDeleteView(LoginRequiredMixin, DeleteView):
     model = Category
     template_name = "inventory/category_delete.html"
     success_url = reverse_lazy("category_list")

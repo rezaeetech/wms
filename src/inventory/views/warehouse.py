@@ -10,11 +10,19 @@ from django.views.generic import (
 from inventory.models import Warehouse
 from inventory.forms import WarehouseForm
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
 current_section = "Warehouse"
 current_section_url = "warehouse_list"
 
+allowed_roles = [
+    "admin",
+    "manager",
+]  # Create, Update, Delete views only access to admin and manager roles.
 
-class WarehouseListView(ListView):
+
+class WarehouseListView(LoginRequiredMixin, ListView):
     model = Warehouse
     template_name = "inventory/warehouse_list.html"
     context_object_name = "warehouses"
@@ -28,7 +36,7 @@ class WarehouseListView(ListView):
         return context
 
 
-class WarehouseDetailView(DetailView):
+class WarehouseDetailView(LoginRequiredMixin, DetailView):
     model = Warehouse
     template_name = "inventory/warehouse_detail.html"
     context_object_name = "warehouse"
@@ -42,7 +50,7 @@ class WarehouseDetailView(DetailView):
         return context
 
 
-class WarehouseCreateView(CreateView):
+class WarehouseCreateView(LoginRequiredMixin, RoleRequiredMixin, CreateView):
     model = Warehouse
     template_name = "inventory/warehouse_form.html"
     form_class = WarehouseForm
@@ -57,7 +65,7 @@ class WarehouseCreateView(CreateView):
         return context
 
 
-class WarehouseUpdateView(UpdateView):
+class WarehouseUpdateView(LoginRequiredMixin, RoleRequiredMixin, UpdateView):
     model = Warehouse
     template_name = "inventory/warehouse_form.html"
     form_class = WarehouseForm
@@ -72,7 +80,7 @@ class WarehouseUpdateView(UpdateView):
         return context
 
 
-class WarehouseDeleteView(DeleteView):
+class WarehouseDeleteView(LoginRequiredMixin, RoleRequiredMixin, DeleteView):
     model = Warehouse
     template_name = "inventory/warehouse_delete.html"
     success_url = reverse_lazy("warehouse_list")

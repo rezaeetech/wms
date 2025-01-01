@@ -6,6 +6,9 @@ from django.views.generic import ListView, FormView
 
 from django.http import JsonResponse
 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.views import RoleRequiredMixin
+
 from orders.models import OrderItems, Order, InventoryTransaction
 from inventory.models import Warehouse as WarehouseModel
 from orders.forms import OrderForm, OrderItemFormSet
@@ -16,7 +19,7 @@ current_section = "orders"
 current_section_url = "order_list"
 
 
-class OrderListView(ListView):
+class OrderListView(LoginRequiredMixin, ListView):
     model = Order
     template_name = "orders/orders_list.html"
     context_object_name = "orders"
@@ -30,7 +33,9 @@ class OrderListView(ListView):
         return context
 
 
-class OrderCreateView(View):
+class OrderCreateView(LoginRequiredMixin, RoleRequiredMixin, View):
+    allowed_roles = ["admin", "manager"]
+
     def get(self, request):
         order_form = OrderForm()
         order_item_formset = OrderItemFormSet(
@@ -97,11 +102,11 @@ def get_product_price(request, product_id):
         return JsonResponse({"success": False, "error": "Product not found"})
 
 
-class InventoryTransactionCreateView(FormView):
+class InventoryTransactionCreateView(LoginRequiredMixin, RoleRequiredMixin, FormView):
+    allowed_roles = ["admin", "manager", "staff"]
+
     def get(self, request, *args, **kwargs):
         order_id = self.kwargs.get("order_id")
-        print("//////////////////////////////////////////////////////////////")
-        print(order_id)
         order = get_object_or_404(Order, id=order_id)
         order_items = order.items.all()
         warehouses = WarehouseModel.objects.all()

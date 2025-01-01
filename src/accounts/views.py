@@ -1,12 +1,10 @@
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseForbidden
 
 from accounts.models import User
-from accounts.forms import (
-    UserRegistrationForm,
-    LoginForm
-)
+from accounts.forms import UserRegistrationForm, LoginForm
 
 
 class RegisterView(View):
@@ -15,10 +13,7 @@ class RegisterView(View):
         return render(
             request,
             template_name="accounts/register.html",
-            context={
-                "title": "Register",
-                "form": form
-            }
+            context={"title": "Register", "form": form},
         )
 
     def post(self, request):
@@ -43,7 +38,7 @@ class RegisterView(View):
         return render(
             request,
             template_name="accounts/register.html",
-            context={"form": form}
+            context={"form": form},
         )
 
 
@@ -53,10 +48,7 @@ class LoginView(View):
         return render(
             request,
             template_name="accounts/login.html",
-            context={
-                "title": "Login",
-                "form": form
-            }
+            context={"title": "Login", "form": form},
         )
 
     def post(self, request):
@@ -80,25 +72,22 @@ class LoginView(View):
                     # Set session expiry to 2 weeks (default)
                     request.session.set_expiry(1209600)
 
-                return redirect("/")
+                # Get the 'next' parameter from the query string
+                next_url = self.request.GET.get("next", "/")  # Default to "/"
+
+                return redirect(next_url)
             else:
                 form.add_error(None, "Invalid username or password")
                 return render(
                     request,
                     template_name="accounts/login.html",
-                    context={
-                        "title": "Login",
-                        "form": form
-                    }
+                    context={"title": "Login", "form": form},
                 )
 
         return render(
             request,
             template_name="accounts/login.html",
-            context={
-                "title": "Login",
-                "form": form
-            }
+            context={"title": "Login", "form": form},
         )
 
 
@@ -107,7 +96,7 @@ class ForgetPasswordView(View):
         return render(
             request,
             template_name="accounts/forget-password.html",
-            context={"title": "Forget Password"}
+            context={"title": "Forget Password"},
         )
 
     def post(self, request):
@@ -118,3 +107,14 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect("/")
+
+
+class RoleRequiredMixin:
+    allowed_roles = []
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.role not in self.allowed_roles:
+            return HttpResponseForbidden(
+                "You do not have permission to access this page."
+            )
+        return super().dispatch(request, *args, **kwargs)
