@@ -2,7 +2,7 @@ from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseForbidden
-from django.utils.http import is_safe_url
+from django.utils.http import url_has_allowed_host_and_scheme
 
 
 from accounts.models import User
@@ -83,7 +83,7 @@ class LoginView(View):
                 # Get the 'next' parameter from the query string
                 next_url = request.POST.get("next_url", "/")
 
-                if not is_safe_url(next_url, allowed_hosts={request.get_host()}):
+                if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
                     next_url = "/"  # Fallback to a safe default
 
                 return redirect(next_url)
