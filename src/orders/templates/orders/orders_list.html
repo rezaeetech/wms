@@ -25,6 +25,14 @@
                   <td>{{ order.customer.name }}</td>
                   <td>{{ order.order_type }}</td>
                   <td>{{ order.order_status }}</td>
+                  {% if user.is_authenticated and user.role == 'admin' or user.role == 'manager' %}
+                    <td class="project-actions text-right">
+                      <a class="btn btn-primary btn-sm" href="{% url 'transaction_create' order_id=order.id %}">
+                        <i class="fas fa-truck"></i>
+                        Transact
+                      </a>
+                    </td>
+                  {% endif %}
                 </tr>
               {% endfor %}
             </tbody>
